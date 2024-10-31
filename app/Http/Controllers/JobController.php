@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Job;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
@@ -11,7 +14,7 @@ class JobController extends Controller
      */
     public function index()
     {
-        //
+        return view()->make('jobs.jobs', ["jobs" => Auth::user()->admin ? Job::all() : Auth::user()->jobs()->get(), "admin" => Auth::user()->admin]);
     }
 
     /**
@@ -19,7 +22,10 @@ class JobController extends Controller
      */
     public function create()
     {
-        //
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+        return view()->make('jobs.job_form');
     }
 
     /**
@@ -35,7 +41,14 @@ class JobController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+        if (!Auth::user()->admin && $job->user_id != Auth::id()) {
+            return redirect()->route('index');
+        }
+        return view()->make('jobs.job', ["job" => $job]);
     }
 
     /**
@@ -43,7 +56,14 @@ class JobController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+        return view()->make('jobs.job_form', ["job" => $job]);
     }
 
     /**
@@ -60,5 +80,31 @@ class JobController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Allocate a job to a driver
+     */
+    public function allocate(Request $request, string $id)
+    {
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+
+        $request->validate([
+            'user_id' => 'integer|required',
+        ]);
+
+        $user = User::all()->where('id', $request["user_id"])->first();
+
+        $job->user_id = $user->id;
+        $job->status = 1;
+        $job->update();
+        return redirect()->route('index');
     }
 }

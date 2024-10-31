@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
@@ -11,7 +13,10 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        //
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+        return view()->make("vehicles.vehicles", ["vehicles" => Vehicle::all()]);
     }
 
     /**
@@ -19,7 +24,10 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        //
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+        return view()->make('vehicles.vehicle_form');
     }
 
     /**
@@ -43,7 +51,14 @@ class VehicleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+        $vehicle = Vehicle::all()->where("id", $id)->first();
+        if(!$vehicle){
+            abort(404);
+        }
+        return view()->make('vehicles.vehicle_form', ["vehicle" => $vehicle]);
     }
 
     /**

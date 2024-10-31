@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VehicleController;
+use App\Models\Job;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +20,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('index');
+    $admin = Auth::user() ? Auth::user()->admin : false;
+    $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->get() : Auth::user()->jobs()->get()) : [];
+    $users = $admin ? User::all()->where("admin", false) : [];
+    return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin]);
+})->name('index');
+
+Route::middleware('auth')->group(function () {
+    Route::resource('jobs', JobController::class);
+    Route::resource('vehicles', VehicleController::class);
+    Route::patch('/jobs/distribute/{id}', [JobController::class, "allocate"])->name('jobs.allocate');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

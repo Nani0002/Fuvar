@@ -18,5 +18,6 @@ class JobSeeder extends Seeder
         foreach ($carriers as $carrier) {
             Job::factory(3)->for($carrier)->create();
         }
+        Job::factory(2)->create(["status" => 0]);
     }
 }

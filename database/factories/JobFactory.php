@@ -21,7 +21,7 @@ class JobFactory extends Factory
             "end_address" => fake()->address(),
             "addressee_name" => fake()->name(),
             "addressee_phone" => fake()->phoneNumber(),
-            "status" => fake()->numberBetween(0, 3)
+            "status" => fake()->numberBetween(1, 4)
         ];
     }
 }
