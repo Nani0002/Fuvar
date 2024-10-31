@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string("addressee_name");
             $table->string("addressee_phone");
             $table->integer("status")->min(0)->max(4);
+            $table->string("message")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

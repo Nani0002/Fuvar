@@ -183,8 +183,15 @@ class JobController extends Controller
 
         $request->validate([
             'status' => 'integer|required|min:2|max:4',
+            'message' => 'string'
         ]);
+
         $job->status = $request["status"];
+        if ($request["status"] != 4) {
+            $job->message = "";
+        } else {
+            $job->message = $request["message"];
+        }
         $job->update();
         return redirect()->route('index');
     }

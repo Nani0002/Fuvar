@@ -44,18 +44,22 @@
                     </div>
 
                     @if (isset($job) && $job->status != 0)
-                        <label for="user_id" class="ms-1 mb-2">Fuvarozó munkatárs</label>
-                        <select class="form-select form-select-lg" name="user_id" id="user_id" disabled>
-                            <option value={{ $job->user_id }}>{{ $job->user->name }}</option>
-                        </select>
+                        <div class="form-floating">
+                            <select class="form-select" name="user_id" id="user_id" disabled>
+                                <option value={{ $job->user_id }}>{{ $job->user->name }}</option>
+                            </select>
+                            <label for="user_id" class="mb-2">Fuvarozó munkatárs</label>
+                        </div>
                     @else
-                        <label for="user_id" class="ms-1 mb-2">Fuvarozó munkatárs</label>
-                        <select class="form-select form-select-lg" name="user_id" id="user_id">
-                            <option value="-1">Későbbi kitűzés</option>
-                            @foreach ($users as $user)
+                        <div class="form-floating">
+                            <select class="form-select" name="user_id" id="user_id">
+                                <option value="-1">Későbbi kitűzés</option>
+                                @foreach ($users as $user)
                                 <option value={{ $user->id }}>{{ $user->name }}</option>
-                            @endforeach
-                        </select>
+                                @endforeach
+                            </select>
+                            <label for="user_id" class="mb-2">Fuvarozó munkatárs</label>
+                        </div>
                     @endif
 
 
