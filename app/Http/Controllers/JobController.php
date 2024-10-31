@@ -107,4 +107,22 @@ class JobController extends Controller
         $job->update();
         return redirect()->route('index');
     }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function progress(Request $request, string $id)
+    {
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+
+        $request->validate([
+            'status' => 'integer|required|min:2|max:4',
+        ]);
+        $job->status = $request["status"];
+        $job->update();
+        return redirect()->route('index');
+    }
 }

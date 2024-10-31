@@ -14,38 +14,38 @@
                             <div class="col-2">{{ $job->addressee_name }}</div>
                             <div class="col-2">{{ $job->addressee_phone }}</div>
                         </div>
-                        @if ($admin)
-                            <div class="row">
-                                <div class="col-2">
-                                    @switch($job->status)
-                                        @case(0)
-                                            <span class="badge fs-6 rounded-pill text-bg-warning">Nincs kiosztva</span>
-                                        @break
+                        <div class="row">
+                            <div class="col-2">
+                                @switch($job->status)
+                                    @case(0)
+                                        <span class="badge fs-6 rounded-pill text-bg-warning">Nincs kiosztva</span>
+                                    @break
 
-                                        @case(1)
-                                            <span class="badge fs-6 rounded-pill text-bg-primary">Kiosztva</span>
-                                        @break
+                                    @case(1)
+                                        <span class="badge fs-6 rounded-pill text-bg-primary">Kiosztva</span>
+                                    @break
 
-                                        @case(2)
-                                            <span class="badge fs-6 rounded-pill text-bg-info">Folyamatban</span>
-                                        @break
+                                    @case(2)
+                                        <span class="badge fs-6 rounded-pill text-bg-info">Folyamatban</span>
+                                    @break
 
-                                        @case(3)
-                                            <span class="badge fs-6 rounded-pill text-bg-success">Elvégezve</span>
-                                        @break
+                                    @case(3)
+                                        <span class="badge fs-6 rounded-pill text-bg-success">Elvégezve</span>
+                                    @break
 
-                                        @case(4)
-                                            <span class="badge fs-6 rounded-pill text-bg-danger">Sikertelen</span>
-                                        @break
-                                    @endswitch
-                                </div>
+                                    @case(4)
+                                        <span class="badge fs-6 rounded-pill text-bg-danger">Sikertelen</span>
+                                    @break
+                                @endswitch
+                            </div>
+                            @if ($admin)
                                 <div class="col-6">
                                     @if ($job->user)
                                         Fuvarozó: {{ $job->user->name }} - {{ $job->user->vehicle->registration }}
                                     @else
-                                        <form action={{route("jobs.allocate", ["id" => $job->id])}} method="post">
+                                        <form action={{ route('jobs.allocate', ['id' => $job->id]) }} method="post">
                                             @csrf
-                                            @method("patch")
+                                            @method('patch')
                                             <div class="row">
                                                 <div class="col-8">
                                                     <select class="form-select form-select-lg" name="user_id" id="user_id">
@@ -61,11 +61,27 @@
                                         </form>
                                     @endif
                                 </div>
-                            </div>
-                        @else
-                            <div class="row">
-                            </div>
-                        @endif
+                            @elseif ($job->status == 1 || $job->status == 2)
+                                <div class="col-6">
+                                    <form action={{ route('jobs.progress', ['id' => $job->id]) }} method="post">
+                                        @csrf
+                                        @method('patch')
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <select class="form-select form-select-lg" name="status" id="status">
+                                                    <option value="2">Folyamatban</option>
+                                                    <option value="3">Elvégezve</option>
+                                                    <option value="4">Sikertelen</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-4">
+                                                <input class="btn btn-primary btn-lg" type="submit" value="Státusz frissítése">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @endforeach

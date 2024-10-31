@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('jobs', JobController::class);
     Route::resource('vehicles', VehicleController::class);
     Route::patch('/jobs/distribute/{id}', [JobController::class, "allocate"])->name('jobs.allocate');
+    Route::patch('/jobs/progress/{id}', [JobController::class, "progress"])->name('jobs.progress');
 });
 
 require __DIR__ . '/auth.php';
