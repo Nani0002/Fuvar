@@ -14,7 +14,7 @@ class JobController extends Controller
      */
     public function index()
     {
-        return view()->make('jobs.jobs', ["jobs" => Auth::user()->admin ? Job::all() : Auth::user()->jobs()->get(), "admin" => Auth::user()->admin]);
+        //
     }
 
     /**
@@ -25,7 +25,7 @@ class JobController extends Controller
         if (!Auth::user()->admin) {
             return redirect()->route('index');
         }
-        return view()->make('jobs.job_form');
+        return view()->make('jobs.job_form', ["admin" => true, "users" => User::all()->where("admin", false)]);
     }
 
     /**
@@ -33,7 +33,32 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+
+        $request->validate([
+            'addressee_name' => 'string|required',
+            'addressee_phone' => 'string|required',
+            'start_address' => 'string|required',
+            'end_address' => 'string|required',
+            'user_id' => 'integer|required'
+        ]);
+
+        $job = new Job;
+        $job->addressee_name = $request->addressee_name;
+        $job->addressee_phone = $request->addressee_phone;
+        $job->start_address = $request->start_address;
+        $job->end_address = $request->end_address;
+        $job->status = 0;
+
+        if ($request->user_id != -1) {
+            $job->user_id = $request->user_id;
+            $job->status = 1;
+        }
+
+        $job->save();
+        return redirect()->route('index');
     }
 
     /**
@@ -59,11 +84,11 @@ class JobController extends Controller
         if (!Auth::user()->admin) {
             return redirect()->route('index');
         }
-        $job = Job::all()->where("id", $id)->first();
+        $job = Job::with('user')->where("id", $id)->first();
         if (!$job) {
             abort(404);
         }
-        return view()->make('jobs.job_form', ["job" => $job]);
+        return view()->make('jobs.job_form', ["job" => $job, "admin" => true, "users" => User::all()->where("admin", false)]);
     }
 
     /**
@@ -71,7 +96,35 @@ class JobController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+
+        $request->validate([
+            'addressee_name' => 'string|required',
+            'addressee_phone' => 'string|required',
+            'start_address' => 'string|required',
+            'end_address' => 'string|required',
+            'user_id' => 'integer'
+        ]);
+
+        $job->addressee_name = $request->addressee_name;
+        $job->addressee_phone = $request->addressee_phone;
+        $job->start_address = $request->start_address;
+        $job->end_address = $request->end_address;
+
+        if (isset($request->user_id) && $request->user_id != -1) {
+            $job->user_id = $request->user_id;
+            $job->status = 1;
+        }
+
+
+        $job->update();
+        return redirect()->route('index');
     }
 
     /**
@@ -79,7 +132,17 @@ class JobController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+        if (!Auth::user()->admin) {
+            return redirect()->route('index');
+        }
+
+        $job->delete();
+
+        return redirect()->route('index');
     }
 
     /**

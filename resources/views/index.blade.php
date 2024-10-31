@@ -61,6 +61,16 @@
                                         </form>
                                     @endif
                                 </div>
+                                <div class="col-2 d-grid">
+                                    <a href={{route('jobs.edit', ["job" => $job->id])}} class="btn btn-outline-dark my-auto">Szerkesztés</a>
+                                </div>
+                                <div class="col-2">
+                                    <form class="d-grid" action="{{route('jobs.destroy', ["job" => $job->id])}}" method="post">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="submit" value="Törlés" class="btn btn-outline-danger my-auto">
+                                    </form>
+                                </div>
                             @elseif ($job->status == 1 || $job->status == 2)
                                 <div class="col-6">
                                     <form action={{ route('jobs.progress', ['id' => $job->id]) }} method="post">

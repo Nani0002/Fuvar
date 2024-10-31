@@ -35,7 +35,7 @@
                                     href="{{ route('vehicles.index') }}">Járművek</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="{{ route('jobs.index') }}">Munkák</a>
+                                <a class="nav-link active" aria-current="page" href="{{ route('jobs.create') }}">Új munka</a>
                             </li>
                         @endif
                     @endauth
