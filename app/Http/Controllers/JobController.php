@@ -14,7 +14,17 @@ class JobController extends Controller
      */
     public function index()
     {
-        //
+        $admin = Auth::user() ? Auth::user()->admin : false;
+        $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->get() : Auth::user()->jobs()->get()) : [];
+        $users = $admin ? User::all()->where("admin", false) : [];
+        $undiscardeds = $admin ? Job::with('user')->where("status", 4)->where(function ($query) {
+            $query->where('discarded', '!=', true)
+                ->orWhereNull('discarded');
+        })->get() : [];
+
+        $counter = $admin ? count(Job::all()->where("status", 4)->whereNull('discarded')) : 0;
+
+        return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin, "undiscardeds" => $undiscardeds, "counter" => $counter]);
     }
 
     /**
@@ -191,6 +201,7 @@ class JobController extends Controller
             $job->message = null;
         } else {
             $job->message = $request["message"];
+            $job->discarded = false;
         }
         $job->update();
         return redirect()->route('index');
@@ -210,7 +221,41 @@ class JobController extends Controller
         $admin = Auth::user() ? Auth::user()->admin : false;
         $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->where("status", $status)->get() : Auth::user()->jobs()->where("status", $status)->get()) : [];
         $users = $admin ? User::all()->where("admin", false) : [];
-        return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin]);
+        $undiscardeds = $admin ? Job::with('user')->where("status", 4)->where(function ($query) {
+            $query->where('discarded', '!=', true)
+                ->orWhereNull('discarded');
+        })->get() : [];
+
+        $counter = $admin ? count(Job::all()->where("status", 4)->whereNull('discarded')) : 0;
+
+        return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin, "undiscardeds" => $undiscardeds, "counter" => $counter]);
     }
 
+    /**
+     * Dismisses the job's message.
+     */
+    public function dismiss(string $id)
+    {
+        $job = Job::all()->where("id", $id)->first();
+        if (!$job) {
+            abort(404);
+        }
+
+        $job->discarded = true;
+
+        $job->update();
+
+        return count(Job::all()->where("status", 4)->where("discarded", false));
+    }
+
+    /**
+     * Reads all jobs' message.
+     */
+    public function read()
+    {
+        foreach (Job::all()->where("status", 4)->where("discarded", null) as $job) {
+            $job->discarded = false;
+            $job->update();
+        }
+    }
 }

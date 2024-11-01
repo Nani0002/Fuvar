@@ -22,6 +22,8 @@ class Job extends Model
         "addressee_name",
         "addressee_phone",
         "status",
+        "message",
+        "discarded"
     ];
 
     public function user(): BelongsTo

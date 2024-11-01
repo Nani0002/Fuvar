@@ -19,5 +19,9 @@ class JobSeeder extends Seeder
             Job::factory(3)->for($carrier)->create();
         }
         Job::factory(2)->create(["status" => 0]);
+        foreach (Job::all()->where("status", 4) as $job) {
+            $job->message = fake()->sentence();
+            $job->update();
+        }
     }
 }

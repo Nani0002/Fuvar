@@ -8,7 +8,7 @@
     <title>Fuvarozó rendszer | @yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body>
@@ -47,6 +47,58 @@
                     @endguest
 
                     @auth
+                        @if ($admin && isset($undiscardeds) && count($undiscardeds) > 0)
+                            <li class="nav-item me-4"><button class="btn btn-outline-danger position-relative read-messages"
+                                    data-bs-toggle="modal" data-bs-target="#undismissedModal"
+                                    id="read-messages-btn">Sikertelen kézbesítések
+                                    @if ($counter > 0)
+                                        <span
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                            id="message-counter">{{ $counter }}</span>
+                                </button>
+                        @endif
+                        </li>
+                        <div class="modal fade" id="undismissedModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Sikertelen kézbesítések</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @foreach ($undiscardeds as $undiscarded)
+                                            <div class="message-div row">
+                                                <div class="col-11">
+                                                    <div class="row">
+                                                        <div class="col-6">{{ $undiscarded->user->name }}</div>
+                                                        <div class="col-6">- {{ $undiscarded->addressee_name }}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">{{ $undiscarded->message }}</div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-1"><button type="button" class="btn-close dismiss-message"
+                                                        data-id="{{ $undiscarded->id }}"></button></div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @push('scripts')
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <script>
+                                window.Laravel = {
+                                    csrfToken: '{{ csrf_token() }}'
+                                }
+                            </script>
+                            <script src="{{ asset('js/dismissmessage.js') }}"></script>
+                        @endpush
+                        @endif
                         <li class="nav-item">
                             <form action="{{ route('logout') }}" method="POST">
                                 @csrf

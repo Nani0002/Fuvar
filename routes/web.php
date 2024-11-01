@@ -19,12 +19,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     $admin = Auth::user() ? Auth::user()->admin : false;
     $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->get() : Auth::user()->jobs()->get()) : [];
     $users = $admin ? User::all()->where("admin", false) : [];
     return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin]);
-})->name('index');
+})->name('index');*/
+
+Route::get('/', [JobController::class, "index"])->name('index');
 
 Route::get('/jobs/status', [JobController::class, "status"])->name('jobs.status');
 
