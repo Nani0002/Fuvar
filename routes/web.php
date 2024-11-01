@@ -26,6 +26,8 @@ Route::get('/', function () {
     return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin]);
 })->name('index');
 
+Route::get('/jobs/status', [JobController::class, "status"])->name('jobs.status');
+
 Route::middleware('auth')->group(function () {
     Route::resource('jobs', JobController::class);
     Route::resource('vehicles', VehicleController::class);

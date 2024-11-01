@@ -6,6 +6,28 @@
 
     @auth
         <div class="container">
+            <form action="/jobs/status" method="GET">
+                <div class="row">
+                    <div class="col-3 offset-7">
+                        <select name="status" id="status" class="form-select form-select-lg status-modifier">
+                            @if ($admin)
+                                <option value="0">Nincs kiosztva</option>
+                            @endif
+                            <option value="1">Kiosztva</option>
+                            <option value="2">Folyamatban</option>
+                            <option value="3">Elvégezve</option>
+                            <option value="4">Sikertelen</option>
+                        </select>
+                    </div>
+                    <div class="col-1 d-grid">
+                        <input type="submit" value="Szűrés" class="btn btn-outline-dark">
+                    </div>
+                    <div class="col-1 d-grid">
+                        <a href="{{ route('index') }}"
+                            class="btn btn-outline-danger d-flex justify-content-center align-items-center">X</a>
+                    </div>
+                </div>
+            </form>
             @foreach ($jobs as $job)
                 <div class="row my-5">
                     <div class="col offet-2 shadow p-3 py-4">
@@ -80,7 +102,8 @@
                                         @method('patch')
                                         <div class="row">
                                             <div class="col-8">
-                                                <select class="form-select form-select-lg status-modifier" name="status" id="status">
+                                                <select class="form-select form-select-lg status-modifier" name="status"
+                                                    id="status">
                                                     <option value="2">Folyamatban</option>
                                                     <option value="3">Elvégezve</option>
                                                     <option value="4">Sikertelen</option>
@@ -95,7 +118,7 @@
                                                 <div class="form-floating">
                                                     <textarea class="form-control" placeholder="Megjegyzés" id="message" name="message"></textarea>
                                                     <label for="message">Megjegyzés</label>
-                                                  </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </form>
@@ -105,6 +128,13 @@
                     </div>
                 </div>
             @endforeach
+            @if (count($jobs) == 0)
+                <div class="row vh-70">
+                    <div class="col h-100 d-flex justify-content-center align-items-center">
+                        <h3>Jelenleg nincsenek kitűzött munkák!</h3>
+                    </div>
+                </div>
+            @endif
         </div>
     @endauth
     @guest

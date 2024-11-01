@@ -172,7 +172,7 @@ class JobController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the status of the specified resource in storage.
      */
     public function progress(Request $request, string $id)
     {
@@ -195,4 +195,22 @@ class JobController extends Controller
         $job->update();
         return redirect()->route('index');
     }
+
+    /**
+     * Get all jobs that match a status.
+     */
+    public function status(Request $request)
+    {
+        $request->validate([
+            'status' => 'integer|required|min:0|max:4',
+        ]);
+
+        $status = $request["status"];
+
+        $admin = Auth::user() ? Auth::user()->admin : false;
+        $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->where("status", $status)->get() : Auth::user()->jobs()->where("status", $status)->get()) : [];
+        $users = $admin ? User::all()->where("admin", false) : [];
+        return view('index', ["jobs" => $jobs, "users" => $users, "admin" => $admin]);
+    }
+
 }
