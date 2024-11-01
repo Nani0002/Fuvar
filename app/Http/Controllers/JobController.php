@@ -183,12 +183,12 @@ class JobController extends Controller
 
         $request->validate([
             'status' => 'integer|required|min:2|max:4',
-            'message' => 'string'
+            'message' => 'string|nullable'
         ]);
 
         $job->status = $request["status"];
         if ($request["status"] != 4) {
-            $job->message = "";
+            $job->message = null;
         } else {
             $job->message = $request["message"];
         }
