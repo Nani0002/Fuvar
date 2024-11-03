@@ -22,7 +22,10 @@ class ApiJobController extends Controller
      */
     public function show(string $id)
     {
-        return response()->json(Job::all()->where("user_id", $id));
+        if(Auth::user()->id == $id || Auth::user()->isAdmin()){
+            return response()->json(Job::all()->where("user_id", $id));
+        }
+        return response()->json(["error" => "You can only get your own jobs if you are not a worker!"], 403);
     }
 
     /**
@@ -31,7 +34,7 @@ class ApiJobController extends Controller
     public function store(Request $request)
     {
         if(!Auth::user()->admin){
-            return response()->json(["error" => "Only administrators can post jobs."]);
+            return response()->json(["error" => "Only administrators can post jobs."], 403);
         }
 
         $errors = [];
@@ -50,7 +53,7 @@ class ApiJobController extends Controller
         }
 
         if (count($errors) > 0) {
-            return response()->json(["errors" => $errors]);
+            return response()->json(["errors" => $errors], 422);
         }
 
         $job = new Job;
@@ -62,7 +65,7 @@ class ApiJobController extends Controller
 
         $job->save();
 
-        return response()->json(["message" => "Munka sikeresen hozzáadva."]);
+        return response()->json(["message" => "Munka sikeresen hozzáadva."], 201);
     }
 
     /**
@@ -71,7 +74,7 @@ class ApiJobController extends Controller
     public function update(Request $request, string $id)
     {
         if(!Auth::user()->admin){
-            return response()->json(["error" => "Only administrators can modify jobs."]);
+            return response()->json(["error" => "Only administrators can modify jobs."], 403);
         }
 
         $job = Job::all()->where("id", $id)->first();
@@ -89,17 +92,15 @@ class ApiJobController extends Controller
         }
 
         if(isset($request["user_id"]) && !is_null($job->user_id)){
-            return response()->json(["errors" => "Már kiosztott munkának a futárját nem lehet módosítani."]);
+            return response()->json(["errors" => "Már kiosztott munkának a futárját nem lehet módosítani."], 422);
         }
         if(isset($request["user_id"]) && is_null($job->user_id) && count(User::all()->where("admin", false)->where("id", $request["user_id"])) == 0){
-            return response()->json(["errors" => "Nem futár munkatárs."]);
+            return response()->json(["errors" => "Nem futár munkatárs."], 422);
         }
         if (isset($request["user_id"]) && is_null($job->user_id) && count(User::all()->where("admin", false)->where("id", $request["user_id"])) != 0) {
             $job->user_id = $request["user_id"];
             $job->status = 1;
         }
-
-
 
         $job->update();
 

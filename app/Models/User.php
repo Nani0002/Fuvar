@@ -47,6 +47,10 @@ class User extends Authenticatable
         'admin' => 'boolean'
     ];
 
+    public function isAdmin(): Bool{
+        return $this->admin === true;
+    }
+
     public function vehicle(): HasOne
     {
         return $this->hasOne(Vehicle::class);
