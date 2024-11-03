@@ -16,7 +16,7 @@ class JobController extends Controller
     {
         $admin = Auth::user() ? Auth::user()->admin : false;
         $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->get() : Auth::user()->jobs()->get()) : [];
-        $users = $admin ? User::all()->where("admin", false) : [];
+        $users = $admin ? User::has("vehicle")->where("admin", false)->get() : [];
         $undiscardeds = $admin ? Job::with('user')->where("status", 4)->where(function ($query) {
             $query->where('discarded', '!=', true)
                 ->orWhereNull('discarded');
@@ -35,7 +35,7 @@ class JobController extends Controller
         if (!Auth::user()->admin) {
             return redirect()->route('index');
         }
-        return view()->make('jobs.job_form', ["admin" => true, "users" => User::all()->where("admin", false)]);
+        return view()->make('jobs.job_form', ["admin" => true, "users" => User::has('vehicle')->where("admin", false)]);
     }
 
     /**
@@ -98,7 +98,7 @@ class JobController extends Controller
         if (!$job) {
             abort(404);
         }
-        return view()->make('jobs.job_form', ["job" => $job, "admin" => true, "users" => User::all()->where("admin", false)]);
+        return view()->make('jobs.job_form', ["job" => $job, "admin" => true, "users" => User::has('vehicle')->where("admin", false)]);
     }
 
     /**
@@ -220,7 +220,7 @@ class JobController extends Controller
 
         $admin = Auth::user() ? Auth::user()->admin : false;
         $jobs = Auth::user() ? ($admin ? Job::with("user.vehicle")->where("status", $status)->get() : Auth::user()->jobs()->where("status", $status)->get()) : [];
-        $users = $admin ? User::all()->where("admin", false) : [];
+        $users = $admin ? User::has("vehicle")->where("admin", false)->get() : [];
         $undiscardeds = $admin ? Job::with('user')->where("status", 4)->where(function ($query) {
             $query->where('discarded', '!=', true)
                 ->orWhereNull('discarded');

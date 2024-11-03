@@ -32,6 +32,7 @@
                             </li>
                         @endif
                     @endauth
+                    @stack('buttons')
                 </ul>
 
                 <ul class="navbar-nav ms-auto">

@@ -30,7 +30,7 @@
             </form>
             @foreach ($jobs as $job)
                 <div class="row my-5">
-                    <div class="col offet-2 shadow p-3 py-4">
+                    <div class="col shadow p-3 py-4">
                         <div class="row mb-2 pb-2 border-bottom">
                             <div class="col-8 fw-bold">{{ $job->start_address }} ⇨ {{ $job->end_address }}</div>
                             <div class="col-2">{{ $job->addressee_name }}</div>

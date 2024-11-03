@@ -33,6 +33,7 @@ Route::get('/jobs/status', [JobController::class, "status"])->name('jobs.status'
 Route::middleware('auth')->group(function () {
     Route::resource('jobs', JobController::class);
     Route::resource('vehicles', VehicleController::class);
+    Route::patch('/jobs/allocate/{id}', [VehicleController::class, "allocate"])->name('vehicles.allocate');
     Route::patch('/jobs/distribute/{id}', [JobController::class, "allocate"])->name('jobs.allocate');
     Route::patch('/jobs/progress/{id}', [JobController::class, "progress"])->name('jobs.progress');
 });
