@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="modal-body">
                                         @foreach ($undiscardeds as $undiscarded)
-                                            <div class="message-div row">
+                                            <div class="message-div row mb-2">
                                                 <div class="col-11">
                                                     <div class="row">
                                                         <div class="col-6">{{ $undiscarded->user->name }}</div>
@@ -77,8 +77,7 @@
                                                     </div>
                                                 </div>
 
-
-                                                <div class="col-1"><button type="button" class="btn-close dismiss-message"
+                                                <div class="col-1"><button type="button" class="btn-close dismiss-message mt-2"
                                                         data-id="{{ $undiscarded->id }}"></button></div>
                                             </div>
                                         @endforeach
