@@ -13,7 +13,7 @@
     <div class="container">
         <div class="row">
             <div class="col-8 offset-2 mt-5 shadow p-5 rounded-4">
-                <div class="fs-4 fw-bold">{{ isset($vehicle) ? 'Jármű szerkesztése' : 'Jármű létrehozása' }}</div>
+                <div class="fs-4 mb-3 fw-bold">{{ isset($vehicle) ? 'Jármű szerkesztése' : 'Jármű létrehozása' }}</div>
                 <form
                     action={{ isset($vehicle) ? route('vehicles.update', ['vehicle' => $vehicle->id]) : route('vehicles.store') }}
                     method="post">
@@ -21,24 +21,38 @@
                     @isset($vehicle)
                         @method('patch')
                     @endisset
-                    <div class="my-3 form-floating">
+
+                    @error('brand')
+                        <span class="text-danger fw-light">{{ $errors->get('brand')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
                         <input type="text" name="brand" id="brand"
                             value="{{ old('brand', $vehicle->brand ?? '') }}" class="form-control" placeholder="Márka">
                         <label for="addressee_name">Márka</label>
                     </div>
 
-                    <div class="my-3 form-floating">
+                    @error('type')
+                        <span class="text-danger fw-light">{{ $errors->get('type')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
                         <input type="text" name="type" id="type" value="{{ old('type', $vehicle->type ?? '') }}"
                             class="form-control" placeholder="Típus">
                         <label for="type">Típus</label>
                     </div>
 
-                    <div class="my-3 form-floating">
-                        <input type="text" name="registration" id="registration" value="{{ old('registration', $vehicle->registration ?? '') }}"
-                            class="form-control" placeholder="Rendszám">
+                    @error('registration')
+                        <span class="text-danger fw-light">{{ $errors->get('registration')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
+                        <input type="text" name="registration" id="registration"
+                            value="{{ old('registration', $vehicle->registration ?? '') }}" class="form-control"
+                            placeholder="Rendszám">
                         <label for="registration">Rendszám</label>
                     </div>
 
+                    @error('user_id')
+                        <span class="text-danger fw-light">{{ $errors->get('user_id')[0] }}</span>
+                    @enderror
                     @if (isset($vehicle) && !is_null($vehicle->user_id))
                         <div class="form-floating">
                             <select class="form-select" name="user_id" id="user_id" disabled>

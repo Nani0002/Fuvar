@@ -20,7 +20,7 @@
                         </select>
                     </div>
                     <div class="col-1 d-grid">
-                        <input type="submit" value="Szűrés" class="btn btn-outline-dark">
+                        <input type="submit" value="Szűrés" class="btn btn-outline-light">
                     </div>
                     <div class="col-1 d-grid">
                         <a href="{{ route('index') }}"
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="col-2 d-grid">
                                     <a href={{ route('jobs.edit', ['job' => $job->id]) }}
-                                        class="btn btn-outline-dark my-auto">Szerkesztés</a>
+                                        class="btn btn-outline-light my-auto">Szerkesztés</a>
                                 </div>
                                 <div class="col-2">
                                     <form class="d-grid" action="{{ route('jobs.destroy', ['job' => $job->id]) }}"
@@ -138,7 +138,40 @@
         </div>
     @endauth
     @guest
+        <div class="container">
+            <div class="row mt-5">
+                <div class="col-6 offset-3 shadow p-5 py-4 rounded-4">
+                    <div class="row mb-4 fs-5 fw-bold">Bejelentkezés</div>
+                    <div class="row">
+                        <form action="{{ route('login') }}" method="POST">
+                            @csrf
+                            @error('email')
+                                <span class="text-danger fw-light">{{ $errors->get('email')[0] }}</span>
+                            @enderror
+                            <div class="mb-3 form-floating">
+                                <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                    class="form-control" placeholder="Email cím">
+                                <label for="email">Email cím</label>
+                            </div>
 
+                            @error('password')
+                                <span class="text-danger fw-light">{{ $errors->get('password')[0] }}</span>
+                            @enderror
+                            <div class="mb-3 form-floating">
+                                <input type="password" name="password" id="password" class="form-control" placeholder="Jelszó">
+                                <label for="password">Jelszó</label>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-3 offset-8 d-grid">
+                                    <input class="btn btn-success" type="submit" value="Bejelentkezés">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endguest
 
 @endsection

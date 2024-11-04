@@ -31,7 +31,7 @@
                             </div>
                             <div class="col-2 d-grid">
                                 <a href={{ route('vehicles.edit', ['vehicle' => $vehicle->id]) }}
-                                    class="btn btn-outline-dark my-auto">Szerkesztés</a>
+                                    class="btn btn-outline-light my-auto">Szerkesztés</a>
                             </div>
                             <div class="col-2">
                                 <form class="d-grid" action="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id]) }}"

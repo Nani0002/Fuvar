@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
-<body>
+<body data-bs-theme="dark">
     <header>
         <h1 class="mt-3 mx-3">Fuvarozó rendszer</h1>
         <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
@@ -37,10 +37,6 @@
 
                 <ul class="navbar-nav ms-auto">
                     @guest
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-success" aria-current="page"
-                                href="{{ route('login') }}">Bejelentkezés</a>
-                        </li>
                         <li class="nav-item me-2">
                             <a class="btn btn-outline-success" aria-current="page"
                                 href="{{ route('register') }}">Regisztráció</a>

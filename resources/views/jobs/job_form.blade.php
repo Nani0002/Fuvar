@@ -8,41 +8,57 @@
     <div class="container">
         <div class="row">
             <div class="col-8 offset-2 mt-5 shadow p-5 rounded-4">
-                <div class="fs-4 fw-bold">{{ isset($job) ? 'Munka szerkesztése' : 'Munka létrehozása' }}</div>
+                <div class="fs-4 mb-3 fw-bold">{{ isset($job) ? 'Munka szerkesztése' : 'Munka létrehozása' }}</div>
                 <form action={{ isset($job) ? route('jobs.update', ['job' => $job->id]) : route('jobs.store') }}
                     method="post">
                     @csrf
                     @isset($job)
                         @method('patch')
                     @endisset
-                    <div class="my-3 form-floating">
+
+                    @error('addressee_name')
+                        <span class="text-danger fw-light">{{ $errors->get('addressee_name')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
                         <input type="text" name="addressee_name" id="addressee_name"
                             value="{{ old('addressee_name', $job->addressee_name ?? '') }}" class="form-control"
                             placeholder="Címzett neve">
                         <label for="addressee_name">Címzett neve</label>
                     </div>
 
-                    <div class="my-3 form-floating">
+                    @error('addressee_phone')
+                        <span class="text-danger fw-light">{{ $errors->get('addressee_phone')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
                         <input type="text" name="addressee_phone" id="addressee_phone"
                             value="{{ old('addressee_phone', $job->addressee_phone ?? '') }}" class="form-control"
                             placeholder="Címzett neve">
                         <label for="addressee_phone">Címzett telefonszáma</label>
                     </div>
 
-                    <div class="my-3 form-floating">
+                    @error('start_address')
+                        <span class="text-danger fw-light">{{ $errors->get('start_address')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
                         <input type="text" name="start_address" id="start_address"
                             value="{{ old('start_address', $job->start_address ?? '') }}" class="form-control"
                             placeholder="Kiindulási cím">
                         <label for="start_address">Kiindulási cím</label>
                     </div>
 
-                    <div class="my-3 form-floating">
+                    @error('end_address')
+                        <span class="text-danger fw-light">{{ $errors->get('end_address')[0] }}</span>
+                    @enderror
+                    <div class="mb-3 form-floating">
                         <input type="text" name="end_address" id="end_address"
                             value="{{ old('end_address', $job->end_address ?? '') }}" class="form-control"
                             placeholder="Érkezési cím">
                         <label for="end_address">Érkezési cím</label>
                     </div>
 
+                    @error('user_id')
+                        <span class="text-danger fw-light">{{ $errors->get('user_id')[0] }}</span>
+                    @enderror
                     @if (isset($job) && $job->status != 0)
                         <div class="form-floating">
                             <select class="form-select" name="user_id" id="user_id" disabled>
