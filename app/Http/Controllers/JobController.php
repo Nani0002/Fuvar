@@ -35,7 +35,7 @@ class JobController extends Controller
         if (!Auth::user()->admin) {
             return redirect()->route('index');
         }
-        return view()->make('jobs.job_form', ["admin" => true, "users" => User::has('vehicle')->where("admin", false)]);
+        return view()->make('jobs.job_form', ["admin" => true, "users" => User::has('vehicle')->where("admin", false)->get()]);
     }
 
     /**
